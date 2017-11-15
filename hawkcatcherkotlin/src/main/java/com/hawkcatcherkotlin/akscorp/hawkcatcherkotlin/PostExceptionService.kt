@@ -12,7 +12,7 @@ import java.net.URL
  */
 class PostExceptionService : IntentService("PostExceptionService"){
 
-    private val EXCEPTION_POST_URL = "http://hawk.so/catcher/android"
+    private val EXCEPTION_POST_URL = "https://hawk.so/catcher/android"
 
     /**
      * Post exception information to hawk server
