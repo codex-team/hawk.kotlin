@@ -54,6 +54,4 @@ class PostExceptionService : IntentService("PostExceptionService"){
         var exceptionInfoJSON = extras?.getString("exceptionInfoJSON")
         postException(exceptionInfoJSON.toString())
     }
-
-
 }
