@@ -7,6 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import android.view.Display
+import android.view.WindowManager
+
 
 /**
  * Created by AksCorp on 12.11.2017.
@@ -111,24 +116,43 @@ class HawkExceptionCatcher : Thread.UncaughtExceptionHandler {
      * @param throwable
      * @return
      */
-    private fun formingJsonExceptionInfo(throwable: Throwable): JSONObject {
-        var jsonParam = JSONObject();
-        var throwable = throwable?.cause
-        try {
-            jsonParam.put("token", HAWK_TOKEN);
-            jsonParam.put("message", throwable.toString());
-            jsonParam.put("stack", getStackTrace(throwable!!));
-            jsonParam.put("brand", Build.BRAND);
-            jsonParam.put("device", Build.DEVICE);
-            jsonParam.put("model", Build.MODEL);
-            jsonParam.put("product", Build.PRODUCT);
-            jsonParam.put("SDK", Build.VERSION.SDK_INT);
-            jsonParam.put("release", Build.VERSION.RELEASE);
-        } catch (e: JSONException) {
-            e.printStackTrace();
+    private fun formingJsonExceptionInfo(throwableException: Throwable?): JSONObject {
+        val jsonParam = JSONObject()
+        val deviceInfo = JSONObject()
+        var throwable = throwableException
+
+        if (throwable != null) {
+            throwable = throwable.cause
         }
-        Log.d("Post json", jsonParam.toString());
-        return jsonParam;
+        try {
+            jsonParam.put("token", HAWK_TOKEN)
+            jsonParam.put("message", throwable.toString())
+            jsonParam.put("stack", getStackTrace(throwable!!))
+            jsonParam.put("language", "Kotlin")
+
+            deviceInfo.put("brand", Build.BRAND)
+            deviceInfo.put("device", Build.DEVICE)
+            deviceInfo.put("model", Build.MODEL)
+            deviceInfo.put("product", Build.PRODUCT)
+            deviceInfo.put("SDK", Build.VERSION.SDK_INT)
+            deviceInfo.put("release", Build.VERSION.RELEASE)
+
+            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = wm.defaultDisplay
+            val width = display.width
+            val height = display.height
+
+            deviceInfo.put("screenSize", Integer.toString(width) + "x" + Integer.toString(height))
+
+            jsonParam.put("deviceInfo", deviceInfo)
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+
+        Log.d("Post json", jsonParam.toString())
+        return jsonParam
     }
 
     /**
