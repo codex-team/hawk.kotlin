@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hawkcatcherkotlin.akscorp.hawkcatcherkotlin">
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <service
+            android:name=".PostExceptionService"
+            android:process=":HawkException" >
+            <intent-filter>
+                <action android:name="android.intent.action.REPORT" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
