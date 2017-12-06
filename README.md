@@ -22,26 +22,14 @@
 ### Пример использования
 Для активации прослушки ошибок, вы можете добавить в ваш класс (например)**Application** следующий код
 
-```java
-public class UseSample extends Application {
-
-    HawkExceptionCatcher exceptionCatcher;
-    public void defineExceptionCather()
-    {
-        exceptionCatcher = new HawkExceptionCatcher(this,"your hawk token");
-        try {
-            exceptionCatcher.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        defineExceptionCather();
-    }
+```kotlin
+var exceptionCatcher: HawkExceptionCatcher;
+exceptionCatcher = HawkExceptionCatcher(this,"your hawk token");
+try {
+    exceptionCatcher.start();
+} catch (Exception e) {
+    e.printStackTrace();
 }
-
 ```
 **Входные параметры** 
 
@@ -85,9 +73,9 @@ public class UseSample extends Application {
 
 Отлавливание **UncheckedException**
 
-```java
-void myTask() {
-	int d = 10 / 0;
+```kotlin
+function myTask() {
+	var d = 10 / 0;
 }
 ...
 myTask();
@@ -96,11 +84,11 @@ myTask();
 
 Отправка отловленных исключений
 
-```java
-void myTask() {
+```kotlin
+function myTask() {
     try {
-        int d = 10 / 0;
-    } catch(ArithmeticException e) {
+        var d = 10 / 0;
+    } catch(e: ArithmeticException) {
         exceptionCatcher.log(e); 
         //Данный метод формирует исключение в JSON и отправляет его
     }
@@ -110,11 +98,11 @@ myTask();
 ```
 При этом ошибки, отловленные в **try-catch** без использования функции **log()** отправлены не будут
 
-```java
-void myTask() {
+```kotlin
+function myTask() {
     try {
-        int d = 10 / 0;
-    } catch(ArithmeticException e) {
+        var d = 10 / 0;
+    } catch(e: ArithmeticException) {
         e.printStackTrace();
         //ошибка отправлена не будет
     }
