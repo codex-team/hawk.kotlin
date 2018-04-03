@@ -16,7 +16,7 @@
    }
    ...
    dependencies {
-        compile 'com.github.codex-team:hawk.kotlin:v1.0.1-alpha'
+	compile 'com.github.codex-team:hawk.kotlin:master-SNAPSHOT'
    }
 ```
 ### Пример использования
