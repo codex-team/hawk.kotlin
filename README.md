@@ -16,7 +16,7 @@
    }
    ...
    dependencies {
-        compile 'com.github.codex-team:hawk.kotlin:v1.0.1-alpha'
+    	implementation 'com.github.codex-team:hawk.kotlin:v1.0.3'
    }
 ```
 ### Пример использования
