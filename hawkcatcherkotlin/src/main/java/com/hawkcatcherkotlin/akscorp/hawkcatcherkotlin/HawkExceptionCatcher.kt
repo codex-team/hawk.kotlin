@@ -61,6 +61,15 @@ class HawkExceptionCatcher : Thread.UncaughtExceptionHandler {
     }
 
     /**
+     * Post the chosen exception to server
+     *
+     * @param exception - exception to post
+     */
+    fun logException(exception: Throwable) {
+        startExceptionPostService(formingJsonExceptionInfo(exception).toString())
+    }
+
+    /**
      * Stop listen uncaught exceptions and set uncaught exception handler by default
      *
      * @throws Exception
@@ -92,18 +101,19 @@ class HawkExceptionCatcher : Thread.UncaughtExceptionHandler {
         oldHandler.uncaughtException(thread, throwable)
     }
 
-
     /**
      * Forming stack trace
      *
      * @param throwable
      * @return
      */
-    private fun getStackTrace(throwable: Throwable): String {
+    private fun getStackTrace(throwable: Throwable?): String {
         if (!isPostStackEnable)
             return "none"
+        if (throwable == null)
+            return "none"
         var result = ""
-        var stackTraceElements = throwable.stackTrace
+        val stackTraceElements = throwable.stackTrace
         for (item in stackTraceElements)
             result += item.toString() + "\n"
         return result
@@ -121,13 +131,13 @@ class HawkExceptionCatcher : Thread.UncaughtExceptionHandler {
         val deviceInfo = JSONObject()
         var throwable = throwableException
 
-        if (throwable != null) {
+        if (throwable != null && throwable.cause != null) {
             throwable = throwable.cause
         }
         try {
             jsonParam.put("token", HAWK_TOKEN)
             jsonParam.put("message", throwable.toString())
-            jsonParam.put("stack", getStackTrace(throwable!!))
+            jsonParam.put("stack", getStackTrace(throwable))
             jsonParam.put("language", "Kotlin")
 
             deviceInfo.put("brand", Build.BRAND)
@@ -162,15 +172,15 @@ class HawkExceptionCatcher : Thread.UncaughtExceptionHandler {
      */
     private fun startExceptionPostService(exceptionInfoJSON: String) {
         try {
-            var extras = Bundle();
+            val extras = Bundle();
             extras.putString("exceptionInfoJSON", exceptionInfoJSON)
 
-            var intent = Intent(context, PostExceptionService::class.java)
+            val intent = Intent(context, PostExceptionService::class.java)
             intent.putExtras(extras)
 
-            context.startService(intent);
+            context.startService(intent)
         } catch (e: Exception) {
-            Log.e("Hawk catcher", e.toString());
+            Log.e("Hawk catcher", e.toString())
         }
     }
 
