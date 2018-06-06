@@ -10,7 +10,7 @@ import java.net.URL
 /**
  * Created by AksCorp on 12.11.2017.
  */
-class PostExceptionService : IntentService("PostExceptionService"){
+class PostExceptionService : IntentService("PostExceptionService") {
 
     private val EXCEPTION_POST_URL = "https://hawk.so/catcher/android"
 
@@ -21,15 +21,15 @@ class PostExceptionService : IntentService("PostExceptionService"){
      */
     private fun postException(exceptionInfoJSON: String) {
         try {
-            var url = URL(EXCEPTION_POST_URL)
-            var conn = url.openConnection() as HttpURLConnection
+            val url = URL(EXCEPTION_POST_URL)
+            val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.addRequestProperty("Content-Type", "application/json;charset=UTF-8")
             conn.doOutput = true
-            conn.doInput =true
+            conn.doInput = true
 
             //Log.i("JSON", jsonParam.toString());
-            var os = DataOutputStream(conn.outputStream)
+            val os = DataOutputStream(conn.outputStream)
             os.writeBytes(exceptionInfoJSON)
 
             os.flush()
@@ -39,7 +39,7 @@ class PostExceptionService : IntentService("PostExceptionService"){
             Log.i("MSG", conn.responseMessage)
 
             conn.disconnect()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             Log.e("Service info", e.toString())
         }
     }
@@ -50,8 +50,8 @@ class PostExceptionService : IntentService("PostExceptionService"){
      * @param intent
      */
     override fun onHandleIntent(intent: Intent?) {
-        var extras = intent?.extras
-        var exceptionInfoJSON = extras?.getString("exceptionInfoJSON")
+        val extras = intent?.extras
+        val exceptionInfoJSON = extras?.getString("exceptionInfoJSON")
         postException(exceptionInfoJSON.toString())
     }
 }
