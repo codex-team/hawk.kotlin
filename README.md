@@ -88,8 +88,8 @@ myTask();
 function myTask() {
     try {
         var d = 10 / 0;
-    } catch(e: ArithmeticException) {
-        exceptionCatcher.log(e); 
+    } catch(e: Exception) {
+        exceptionCatcher.logException(e); 
         //Данный метод формирует исключение в JSON и отправляет его
     }
 }
@@ -102,7 +102,7 @@ myTask();
 function myTask() {
     try {
         var d = 10 / 0;
-    } catch(e: ArithmeticException) {
+    } catch(e: Exception) {
         e.printStackTrace();
         //ошибка отправлена не будет
     }
