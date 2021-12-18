@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+    id "org.jetbrains.kotlin.jvm" version "1.6.0"
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.9'
+}
