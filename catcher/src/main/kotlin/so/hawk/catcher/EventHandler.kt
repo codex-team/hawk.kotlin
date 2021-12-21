@@ -8,7 +8,6 @@ import so.hawk.catcher.addons.Addon
 import so.hawk.catcher.addons.UserAddon
 import so.hawk.catcher.addons.UserAddonWrapper
 import so.hawk.catcher.configurations.HawkConfigurations
-import so.hawk.catcher.data.EventStackTrace
 
 class EventHandler(
     private val configurations: HawkConfigurations,
@@ -30,10 +29,10 @@ class EventHandler(
      */
     private fun getStackTrace(throwable: Throwable?): JsonArray {
         val stackTraceElements = throwable!!.stackTrace
-        return stackTraceElements
-            .map(::convertStackTraceElementToJson)
-            .let(gson::toJsonTree)
-            .asJsonArray
+        return JsonArray().apply {
+            stackTraceElements.map(::convertStackTraceElementToJson)
+                .forEach(::add)
+        }
     }
 
     /**
@@ -42,16 +41,12 @@ class EventHandler(
      * @param element stack trace element
      * @return json object with information of stack trace element
      */
-    private fun convertStackTraceElementToJson(element: StackTraceElement): EventStackTrace {
+    private fun convertStackTraceElementToJson(element: StackTraceElement): JsonElement {
         val jsonStackTraceElement = JsonObject()
         jsonStackTraceElement.addProperty("file", element.className)
         jsonStackTraceElement.addProperty("line", element.lineNumber)
         jsonStackTraceElement.addProperty("function", element.methodName)
-        return EventStackTrace(
-            element.className,
-            element.lineNumber,
-            element.methodName
-        )
+        return jsonStackTraceElement
     }
 
     /**
