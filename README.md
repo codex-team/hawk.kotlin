@@ -1,12 +1,41 @@
-# Hawk android catcher ![](https://jitpack.io/v/jitpack/maven-simple.svg?style=flat-square)
-### Сборщик ошибок 
-Эта библиотека обеспечивает сбор непроверяемых ошибок во время работы приложения и отправляет их в ваш https://hawk.so личный кабинет.
-Так же существует возможность отправлять отловленные в **try-catch** ошибки
+# Hawk android catcher [![](https://jitpack.io/v/codex-team/hawk.kotlin.svg)](https://jitpack.io/#codex-team/hawk.kotlin)
+
+### Сборщик ошибок
+
+Эта библиотека обеспечивает сбор непроверяемых ошибок во время работы приложения и отправляет их в ваш https://hawk.so
+личный кабинет. Так же существует возможность отправлять отловленные в **try-catch** ошибки
 
 -----
 
 ### Подключение
-Для подключения библиотеки необходимо добавить в gradle maven репозиторий и ссылку с библиотеку. Пример ниже 
+
+#### Maven
+
+Add the JitPack repository to your build file
+
+```
+     <repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+
+Add the dependency
+
+```
+    <dependency>
+	    <groupId>com.github.codex-team</groupId>
+	    <artifactId>hawk.kotlin</artifactId>
+	    <version>v3</version>
+	</dependency>
+```
+
+#### Gradle
+
+Для подключения библиотеки необходимо добавить в gradle maven репозиторий.
+
 ```
     allprojects {
         repositories {
@@ -14,99 +43,79 @@
             maven { url "https://jitpack.io" }
         }
    }
-   ...
+```
+
+И зависимость на библиотеку
+
+```
    dependencies {
     	implementation 'com.github.codex-team:hawk.kotlin:v1.0.4'
    }
 ```
+
 ### Пример использования
-Для активации прослушки ошибок, вы можете добавить в ваш класс (например)**Application** следующий код
+
+Для активации прослушки ошибок, вы можете добавить в ваш главный класс следующий код
 
 ```kotlin
-var exceptionCatcher: HawkExceptionCatcher;
-exceptionCatcher = HawkExceptionCatcher(this,"your hawk token");
-try {
-    exceptionCatcher.start();
-} catch (Exception e) {
-    e.printStackTrace();
-}
+val catcher = HawkCatcher(integrationToken)
+    .versionProvider(VersionProviderImpl())
+    .userProvider(UserProviderImpl())
+    .isDebug(true)
+    .build()
+
+catcher.start()
 ```
-**Входные параметры** 
+**Входные параметры**
 
-> **Context** - текущий context приложения
+> **integrationToken** - уникальный ключ Hawk токен
 
-> **Token** - уникальный ключ авторизации(Например:0927e8cc-f3f0-4ce4-aa27-916f0774af51)
+> **versionProvider** - провайдер для предоставления номера и имени версии приложения
 
-**Примеры вывода:**
-```json
-{  
-   "token":"your hawk token",
-   "message":"java.lang.ArithmeticException: divide by zero",
-   "stack":"java.lang.RuntimeException: Unable to start activity ComponentInfo{com.hawkandroidcatcher.akscorp.hawkandroidcatcher\/com.hawkandroidcatcher.akscorp.hawkandroidcatcher.SampleMainActivity}: java.lang.ArithmeticException: divide by zero",
-   "brand":"Android",
-   "device":"generic_x86",
-   "model":"Android SDK built for x86",
-   "product":"sdk_google_phone_x86",
-   "SDK":"22",
-   "release":"5.1.1",
-}
-```
+> **userProvider** - провайдер для предоставления уникального идентификатора пользователя и имени пользователя
 
-### Параметры вывода
-> **message** - название самой ошибки
-
-> **stack** - стек ошибки
-
-> **brand** - код поставщика android устройства
-
-> **device** - имя устройства в рамках индустриального дизайна(?)
-
-> **model** - общеизвестное имя android устройства
-
-> **product** - общее наименование продукции
-
-> **SDK** - версия SDK
-
-> **release** - версия андроида
+> **isDebug** - если необходимо отобразить дополнительную информацию
 
 ## Пример работы  
 
 Отлавливание **UncheckedException**
 
 ```kotlin
-function myTask() {
+fun myTask() {
 	var d = 10 / 0;
 }
-...
-myTask();
+
+myTask()
 ```
-Отловленная ошибка будет соотвествовать формату **JSON** выше
 
 Отправка отловленных исключений
 
 ```kotlin
-function myTask() {
+val catcher: HawkExceptionCatcher
+
+fun myTask() {
     try {
-        var d = 10 / 0;
+        var d = 10 / 0
     } catch(e: Exception) {
-        exceptionCatcher.logException(e); 
+        catcher.caught(e)
         //Данный метод формирует исключение в JSON и отправляет его
     }
 }
-...
-myTask();
+
+myTask()
 ```
-При этом ошибки, отловленные в **try-catch** без использования функции **log()** отправлены не будут
+
+При этом ошибки, отловленные в **try-catch** без использования функции **caught()** отправлены не будут
 
 ```kotlin
-function myTask() {
+fun myTask() {
     try {
-        var d = 10 / 0;
+        var d = 10 / 0
     } catch(e: Exception) {
-        e.printStackTrace();
+        e.printStackTrace()
         //ошибка отправлена не будет
     }
 }
-...
-myTask();
+
+myTask()
 ```
