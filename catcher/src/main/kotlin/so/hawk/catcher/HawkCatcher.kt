@@ -49,8 +49,9 @@ class HawkCatcher(
      * Setup debugging mode for showing additional information
      * @param isDebug flag for additional information
      */
-    fun isDebug(isDebug: Boolean) {
+    fun isDebug(isDebug: Boolean): HawkCatcher {
         _isDebug = isDebug
+        return this
     }
 
     /**
