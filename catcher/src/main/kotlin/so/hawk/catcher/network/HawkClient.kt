@@ -41,6 +41,9 @@ class HawkClient(
      */
     private val url = URL("https://${integrationId}.k1.hawk.so/")
 
+    /**
+     * Used to wait for an event to be sent and receive a response
+     */
     private val countDownLatch = CountDownLatch(1)
 
     /**
@@ -73,6 +76,9 @@ class HawkClient(
         countDownLatch.countDown()
     }
 
+    /**
+     * Waiting for the event to go
+     */
     fun await() {
         countDownLatch.await(DEFAULT_TIMEOUT_OF_CONNECTION_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
     }

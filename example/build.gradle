@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation project(':catcher')
+    implementation 'com.github.codex-team:hawk.kotlin:c9168c6c06'
 }

@@ -1,21 +1,21 @@
 package so.hawk.catcher
 
-interface HawkSettingProvider {
+internal interface HawkSettingProvider {
     /**
      * Get version name of application
      * @return version name
      */
-    fun getVersionName(): String
+    val versionName: String
 
     /**
      * Get application version code
      * @return version of application
      */
-    fun getAppVersion(): Int
+    val appVersion: Int
 
     /**
      * Get Hawk token
      * @return Hawk token
      */
-    fun getToken(): String
+    val token: String
 }

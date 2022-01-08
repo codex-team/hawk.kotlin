@@ -5,20 +5,20 @@ import so.hawk.catcher.Logger
 import so.hawk.catcher.TokenParser
 import so.hawk.catcher.TokenParser.Companion.UNKNOWN_INTEGRATION_ID
 import so.hawk.catcher.addons.Addon
-import so.hawk.catcher.addons.UserAddon
-import so.hawk.catcher.addons.UserAddonWrapper
+import so.hawk.catcher.addons.CustomAddon
+import so.hawk.catcher.addons.CustomAddonWrapper
 
 /**
- * Common configuration for stable work with default list of addons that should be apply to sending
+ * Common configuration for stable work with default list of addons that should be used for sending
  * additional information
  * @param token for getting integrationId
  * @param defaultAddons default list of addons
- * @param userAddons list with user custom addons
+ * @param customAddons list with user custom addons
  */
-class HawkConfigurations(
-    val token: String,
+internal class HawkConfigurations(
+    token: String,
     private val defaultAddons: List<Addon>,
-    userAddons: List<UserAddon> = emptyList(),
+    customAddons: List<CustomAddon> = emptyList(),
     tokenParser: TokenParser,
     private val gson: Gson,
     private val logger: Logger
@@ -37,9 +37,9 @@ class HawkConfigurations(
     /**
      * Map of user addons
      */
-    private val _userAddons: MutableMap<String, Addon> =
-        userAddons.associateBy(UserAddon::name) { addon ->
-            UserAddonWrapper(addon, gson)
+    private val _customAddons: MutableMap<String, Addon> =
+        customAddons.associateBy(CustomAddon::name) { addon ->
+            CustomAddonWrapper(addon, gson)
         }
             .toMutableMap()
 
@@ -62,43 +62,43 @@ class HawkConfigurations(
         get() = defaultAddons + _additionalAddons
 
     /**
-     * Get list of user addons. Can contains additional user addons. For add new [UserAddon] use
-     * [HawkConfigurations.addUserAddon]
+     * Get list of user addons. Can contains additional user addons. For add new [CustomAddon] use
+     * [HawkConfigurations.addCustomAddon]
      */
-    override val userAddons: List<Addon>
-        get() = _userAddons.values.toList()
+    override val customAddons: List<Addon>
+        get() = _customAddons.values.toList()
 
     /**
-     * Add [UserAddon] to map, [UserAddon.name] used as key
+     * Add [CustomAddon] to map, [CustomAddon.name] used as key
      *
-     * @param userAddon
+     * @param customAddon
      */
-    override fun addUserAddon(userAddon: UserAddon) {
-        if (_userAddons.containsKey(userAddon.name)) {
-            logger.w("User addon with name (${userAddon.name}) already added!")
+    override fun addCustomAddon(customAddon: CustomAddon) {
+        if (_customAddons.containsKey(customAddon.name)) {
+            logger.w("User addon with name (${customAddon.name}) already added!")
         }
-        _userAddons[userAddon.name] = UserAddonWrapper(userAddon, gson)
+        _customAddons[customAddon.name] = CustomAddonWrapper(customAddon, gson)
     }
 
     /**
-     * Remove [UserAddon] from map, [UserAddon.name] used as key
+     * Remove [CustomAddon] from map, [CustomAddon.name] used as key
      *
-     * @param userAddon
+     * @param customAddon
      */
-    override fun removeUserAddon(userAddon: UserAddon) {
-        val addon = _userAddons.remove(userAddon.name)
+    override fun removeCustomAddon(customAddon: CustomAddon) {
+        val addon = _customAddons.remove(customAddon.name)
         if (addon == null) {
-            logger.w("User addon with name (${userAddon.name}) already removed!")
+            logger.w("User addon with name (${customAddon.name}) already removed!")
         }
     }
 
     /**
-     * Remove [UserAddon] from map by name, [UserAddon.name] used as key
+     * Remove [CustomAddon] from map by name, [CustomAddon.name] used as key
      *
      * @param name
      */
-    override fun removeUserAddon(name: String) {
-        val addon = _userAddons.remove(name)
+    override fun removeCustomAddon(name: String) {
+        val addon = _customAddons.remove(name)
         if (addon == null) {
             logger.w("User addon with name ($name) already removed!")
         }

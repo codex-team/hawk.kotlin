@@ -4,10 +4,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 
 /**
- * Wrapper for converting from [UserAddon] to [Addon]
+ * Wrapper for converting from [CustomAddon] to [Addon]
  */
-class UserAddonWrapper(
-    private val userAddon: UserAddon,
+internal class CustomAddonWrapper(
+    private val customAddon: CustomAddon,
     private val gson: Gson
 ) : Addon {
     /**
@@ -15,6 +15,6 @@ class UserAddonWrapper(
      * @param jsonObject Json object that put all information
      */
     override fun fillJsonObject(jsonObject: JsonObject) {
-        jsonObject.add(userAddon.name, gson.toJsonTree(userAddon.provideData()))
+        jsonObject.add(customAddon.name, gson.toJsonTree(customAddon.provideData()))
     }
 }

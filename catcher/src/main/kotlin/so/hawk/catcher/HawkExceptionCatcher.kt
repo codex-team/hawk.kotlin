@@ -2,9 +2,11 @@ package so.hawk.catcher
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
-import so.hawk.catcher.addons.UserAddon
+import so.hawk.catcher.addons.CustomAddon
 import so.hawk.catcher.configurations.HawkConfigurations
 import so.hawk.catcher.network.HawkClient
+import so.hawk.catcher.provider.UserProvider
+import so.hawk.catcher.provider.VersionProvider
 import kotlin.system.exitProcess
 
 /**
@@ -13,9 +15,9 @@ import kotlin.system.exitProcess
 class HawkExceptionCatcher(
     token: String,
     versionProvider: VersionProvider,
-    userProvider: UserProvider
-) :
-    Thread.UncaughtExceptionHandler {
+    userProvider: UserProvider,
+    isDebug: Boolean
+) : Thread.UncaughtExceptionHandler {
 
     /**
      * Old handler that will setup like as default in application
@@ -33,26 +35,35 @@ class HawkExceptionCatcher(
     /**
      * Meta data provider for getting information
      */
-    private val metaDataProvider: HawkSettingProvider =
+    private val hawkSettingProvider: HawkSettingProvider =
         DefaultSettingProvider(token, versionProvider)
 
+    /**
+     * Used for boxing events to json objects
+     */
     private val gson = Gson()
 
-    private val logger = BaseLogger()
+    /**
+     * Show information, warning or errors
+     */
+    private val logger = BaseLogger(isDebug)
 
     /**
      * Contains common configuration for running Hawk Catcher
      */
     private val configuration: HawkConfigurations = HawkConfigurations(
-        metaDataProvider.getToken(),
+        hawkSettingProvider.token,
         listOf(),
         gson = gson,
-        tokenParser = TokenParserImpl(gson),
+        tokenParser = TokenParserImpl(),
         logger = logger
     )
 
+    /**
+     * Event handler with boxing to json
+     */
     private val eventHandler: EventHandler =
-        EventHandler(configuration, settingProvider = metaDataProvider, userProvider, gson, logger)
+        EventHandler(configuration, settingProvider = hawkSettingProvider, userProvider, gson, logger)
 
     /**
      * Client for sending events
@@ -74,16 +85,28 @@ class HawkExceptionCatcher(
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
-    fun addUserAddon(userAddon: UserAddon) {
-        configuration.addUserAddon(userAddon)
+    /**
+     * Add custom additional addons
+     * @param customAddon custom addon
+     */
+    fun addCustomAddon(customAddon: CustomAddon) {
+        configuration.addCustomAddon(customAddon)
     }
 
-    fun removeUserAddon(userAddon: UserAddon) {
-        configuration.removeUserAddon(userAddon)
+    /**
+     * Remove custom additional addons by instance
+     * @param customAddon instance of previously added [CustomAddon]
+     */
+    fun removeCustomAddon(customAddon: CustomAddon) {
+        configuration.removeCustomAddon(customAddon)
     }
 
-    fun removeUserAddonByName(name: String) {
-        configuration.removeUserAddon(name)
+    /**
+     * Remove custom additional addon by name
+     * @param name name of [CustomAddon]. See in [CustomAddon.name]
+     */
+    fun removeCustomAddonByName(name: String) {
+        configuration.removeCustomAddon(name)
     }
 
     /**
@@ -135,7 +158,7 @@ class HawkExceptionCatcher(
         startExceptionPostService(
             eventHandler.formingJsonExceptionInfo(
                 throwable, isFatal = false,
-                object : UserAddon {
+                object : CustomAddon {
                     override val name: String
                         get() = "customData"
 
@@ -149,14 +172,14 @@ class HawkExceptionCatcher(
      * Post any exception to server
      *
      * @param throwable
-     * @param customUserAddon
+     * @param customCustomAddon
      */
-    fun caught(throwable: Throwable, customUserAddon: UserAddon) {
+    fun caught(throwable: Throwable, customCustomAddon: CustomAddon) {
         startExceptionPostService(
             eventHandler.formingJsonExceptionInfo(
                 throwable,
                 isFatal = false,
-                customUserAddon
+                customCustomAddon
             )
         )
     }

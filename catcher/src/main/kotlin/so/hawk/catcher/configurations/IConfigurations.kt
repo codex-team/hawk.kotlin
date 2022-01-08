@@ -1,12 +1,12 @@
 package so.hawk.catcher.configurations
 
 import so.hawk.catcher.addons.Addon
-import so.hawk.catcher.addons.UserAddon
+import so.hawk.catcher.addons.CustomAddon
 
 /**
  * Provide information of configuration
  */
-interface IConfigurations {
+internal interface IConfigurations {
     /**
      * Integration id that need to configure URL for sending event
      */
@@ -25,26 +25,26 @@ interface IConfigurations {
     /**
      * Provide list of user addons that apply to event before sending
      */
-    val userAddons: List<Addon>
+    val customAddons: List<Addon>
 
     /**
      * Add user addon
      *
-     * @param userAddon
+     * @param customAddon
      */
-    fun addUserAddon(userAddon: UserAddon)
+    fun addCustomAddon(customAddon: CustomAddon)
 
     /**
      * Remove user addon
      *
-     * @param userAddon
+     * @param customAddon
      */
-    fun removeUserAddon(userAddon: UserAddon)
+    fun removeCustomAddon(customAddon: CustomAddon)
 
     /**
      * Remove user addon by [name]
      *
      * @param name Name of user addon
      */
-    fun removeUserAddon(name: String)
+    fun removeCustomAddon(name: String)
 }
