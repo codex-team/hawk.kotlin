@@ -1,9 +1,8 @@
 package so.hawk.catcher.example
 
 import so.hawk.catcher.HawkCatcher
-import so.hawk.catcher.User
-import so.hawk.catcher.UserProvider
-import so.hawk.catcher.VersionProvider
+import so.hawk.catcher.provider.User
+import so.hawk.catcher.provider.UserProvider
 
 class Main {
     companion object {
@@ -13,9 +12,10 @@ class Main {
         fun main(args: Array<String>) {
             val catcher =
                 HawkCatcher(integrationToken)
-                    .addVersionProvider(VersionProvider.defaultVersionProvider)
-                    .addUserProvider(UserProviderImpl())
+                    .userProvider(UserProviderImpl())
+                    .isDebug(true)
                     .build()
+
             catcher.start()
 
             Main().run()
