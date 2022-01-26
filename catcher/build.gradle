@@ -1,0 +1,30 @@
+plugins {
+    id 'java-library'
+    id "org.jetbrains.kotlin.jvm" version "1.6.0"
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.9'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.github.codex-team"
+            artifactId = "hawk.kotlin.catcher"
+            version = "v3.0"
+
+            from components.java
+        }
+    }
+}
