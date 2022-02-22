@@ -1,3 +1,4 @@
 include ':catcher'
 include ':example'
 include ':catcher-android'
+include ':example-android'
