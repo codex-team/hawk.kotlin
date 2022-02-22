@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id "org.jetbrains.kotlin.jvm" version "1.6.0"
+    id "org.jetbrains.kotlin.jvm"
     id 'maven-publish'
 }
 
@@ -18,11 +18,17 @@ artifacts {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = 'CustomMavenRepo'
+            url = "file://${buildDir}/repo"
+        }
+    }
     publications {
-        maven(MavenPublication) {
+        release(MavenPublication) {
             groupId = "com.github.codex-team"
-            artifactId = "hawk.kotlin.catcher"
-            version = "v3.0"
+            artifactId = "catcher"
+            version = "3.0.1"
 
             from components.java
         }

@@ -3,8 +3,10 @@ package so.hawk.catcher
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import so.hawk.catcher.addons.CustomAddon
+import so.hawk.catcher.addons.DeviceSpecificAddon
 import so.hawk.catcher.configurations.HawkConfigurations
 import so.hawk.catcher.network.HawkClient
+import so.hawk.catcher.provider.DeviceSpecificProvider
 import so.hawk.catcher.provider.UserProvider
 import so.hawk.catcher.provider.VersionProvider
 import kotlin.system.exitProcess
@@ -12,10 +14,11 @@ import kotlin.system.exitProcess
 /**
  * Main class of Hawk Catcher.
  */
-class HawkExceptionCatcher(
+class HawkExceptionCatcher internal constructor(
     token: String,
     versionProvider: VersionProvider,
     userProvider: UserProvider,
+    deviceSpecificProvider: DeviceSpecificProvider,
     isDebug: Boolean
 ) : Thread.UncaughtExceptionHandler {
 
@@ -53,7 +56,7 @@ class HawkExceptionCatcher(
      */
     private val configuration: HawkConfigurations = HawkConfigurations(
         hawkSettingProvider.token,
-        listOf(),
+        listOf(DeviceSpecificAddon(deviceSpecificProvider)),
         gson = gson,
         tokenParser = TokenParserImpl(),
         logger = logger
