@@ -3,7 +3,8 @@ plugins {
     id 'kotlin-android'
 }
 
-apply from: file('publish.gradle')
+//apply from: file('publish.gradle')
+apply from: file('android-publish.gradle')
 
 android {
     compileSdkVersion 31
