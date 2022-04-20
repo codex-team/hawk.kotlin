@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Android Example</string>
+    <string name="hawk_token">Your Token</string>
+</resources>
