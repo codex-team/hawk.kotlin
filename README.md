@@ -130,3 +130,8 @@ CodeX is a team of digital specialists around the world interested in building h
 | 🌐 | Join  👋  | Twitter | Instagram |
 | -- | -- | -- | -- |
 | [codex.so](https://codex.so) | [codex.so/join](https://codex.so/join) |[@codex_team](http://twitter.com/codex_team) | [@codex_team](http://instagram.com/codex_team/) |
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+See the [LICENSE](./LICENSE) file for the full text.
